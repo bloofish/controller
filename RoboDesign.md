@@ -1,5 +1,5 @@
 # Requirements
-*Identifying the purpose of a construction and any specific requirements.*
+*Identifying the purpose of construction and any specific requirements.*
 
 # Research and Design
 *Gathering information, selecting components and designing structure.*
