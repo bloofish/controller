@@ -1,6 +1,6 @@
 # Requirements
 *Identifying the purpose of construction and any specific requirements.*
-Goal: To design and build a simple remotely controlled robot.
+Goal: To design and build a simple remotely controlled robot./
 Requirements: Basic movement/turining on carpet and hard flooring, camera to stream to user, battery powered, audio input/output.
 
 # Research and Design
