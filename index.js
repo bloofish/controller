@@ -1,29 +1,36 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
+require('dotenv').config()
 
-initSocket = async () => {
-  try {
-    const response = await axios.post("http://francescogorini.com:4269/login", {
-      username: "raspberrypirobot",
-      password: "$fuckyomomma$",
-    });
-    const ws = new WebSocket(
-      `ws://francescogorini.com:4269/ws?token=${response.data.token}`
-    );
-    ws.on("open", function open() {
-      console.log("connected");
-    });
+const API_URL = "https://francescogorini.com/rpi-relay"
+const SOCK_URL = "wss://francescogorini.com/rpi-relay"
 
-    ws.on("close", function close() {
-      console.log("disconnected");
-    });
+initSocketConn = async () => {
+    try {
+        // Login through REST API to fetch JWT
+        const response = await axios.post(`${API_URL}/login`, {
+            username: process.env.USERNAME,
+            password: process.env.PASSWORD,
+        });
 
-    ws.on("message", function message(data) {
-      console.log(data.toString());
-    });
-  } catch (err) {
-    console.error(err);
-  }
+        // Establish Websocket connection using JWT
+        const ws = new WebSocket(`${SOCK_URL}/ws?token=${response.data.token}`);
+
+        // Websocket events
+        ws.on("open", () => {
+            console.log("Websocket connection established");
+        });
+
+        ws.on("close", () => {
+            console.log("Websocket connection closed");
+        });
+
+        ws.on("message", (data) => {
+            console.log(`Recieved from relay server: ${data.toString()}`);
+        });
+    } catch (err) {
+        console.error(`Error: ${err.response.status} ${err.response.data}`);
+    }
 };
 
-initSocket();
+initSocketConn();
