@@ -1,9 +1,12 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
 require("dotenv").config();
+var Gpio = require("onoff").Gpio; //include onoff to interact with the GPIO
 
 const API_URL = "https://francescogorini.com/rpi-relay";
 const SOCK_URL = "wss://francescogorini.com/rpi-relay";
+
+var LED = new Gpio(4, "out"); //use GPIO pin 4, and specify that it is output
 
 initSocketConn = async () => {
   try {
@@ -27,6 +30,7 @@ initSocketConn = async () => {
     });
 
     ws.on("message", (data) => {
+      checkInput(data);
       console.log(`Recieved from relay server: ${data.toString()}`);
     });
   } catch (err) {
@@ -35,3 +39,18 @@ initSocketConn = async () => {
 };
 
 initSocketConn();
+//led.unexport();
+
+function checkInput(data) {
+  if (err) {
+    throw err;
+  }
+  if (data.toString == "W") {
+    LED.writeSync(on);
+    console.log("on");
+  }
+  if (data.toString == "S") {
+    LED.writeSync(off);
+    console.log("off");
+  }
+}
