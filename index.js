@@ -57,16 +57,16 @@ initSocketConn();
 //led.unexport();
 
 const clearInputs = () => {
-  if (now.getTime() - wTimeOut > timeOut) {
+  if (new Date().getTime() - wTimeOut > timeOut) {
     wPressed = 0;
   }
-  if (now.getTime() - sTimeOut > timeOut) {
+  if (new Date().getTime() - sTimeOut > timeOut) {
     sPressed = 0;
   }
-  if (now.getTime() - aTimeOut > timeOut) {
+  if (new Date().getTime() - aTimeOut > timeOut) {
     aPressed = 0;
   }
-  if (now.getTime() - dTimeOut > timeOut) {
+  if (new Date().getTime() - dTimeOut > timeOut) {
     dPressed = 0;
   }
   setInputs();
