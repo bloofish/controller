@@ -27,7 +27,7 @@ initSocketConn = async () => {
 
     // Websocket events
     ws.on("open", () => {
-      const handle = setTimeout(() => clearInputs(), timeOut);
+      const handle = setInterval(() => clearInputs(), timeOut);
       console.log("Websocket connection established");
     });
 
