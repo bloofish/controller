@@ -46,11 +46,11 @@ function checkInput(data) {
     throw err;
   }
   if (data.toString == "W") {
-    LED.writeSync(on);
+    LED.writeSync(1);
     console.log("on");
   }
   if (data.toString == "S") {
-    LED.writeSync(off);
+    LED.writeSync(0);
     console.log("off");
   }
 }
