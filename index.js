@@ -57,6 +57,7 @@ initSocketConn();
 //led.unexport();
 
 const clearInputs = () => {
+  console.log("deezinputgone");
   if (new Date().getTime() - wTimeOut > timeOut) {
     wPressed = 0;
   }
@@ -69,22 +70,23 @@ const clearInputs = () => {
   if (new Date().getTime() - dTimeOut > timeOut) {
     dPressed = 0;
   }
+  console.log(wPressed);
   setInputs();
 };
 const checkInputs = (data) => {
-  if (data.toString() == "W") {
+  if (data.toString() === "W") {
     wPressed = 1;
     wTimeOut = new Date().getTime();
   }
-  if (data.toString() == "S") {
+  if (data.toString() === "S") {
     sPressed = 1;
     sTimeOut = new Date().getTime();
   }
-  if (data.toString() == "A") {
+  if (data.toString() === "A") {
     aPressed = 1;
     aTimeOut = new Date().getTime();
   }
-  if (data.toString() == "D") {
+  if (data.toString() === "D") {
     dPressed = 1;
     dTimeOut = new Date().getTime();
   }
