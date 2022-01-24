@@ -36,11 +36,25 @@ initSocketConn = async () => {
     });
 
     ws.on("message", (data) => {
-      checkInputs(data);
-      console.log(`Recieved from relay server: ${data.toString()}`);
+      const msg = JSON.parse(data.toString())
+      switch (msg.cmd) {
+        case "TX_PING":
+          // Send user ping packet back to relay server to let users calc ping delay in ms
+          console.log(`Recieved TX_PING`);
+          const pingReply = { ...msg, sender: msg.target, target: msg.sender }
+          ws.send(JSON.stringify(pingReply))
+          break;
+        case "TX_CMD":
+          // Process command
+          console.log(`Recieved TX_CMD: ${msg.data}`);
+          checkInputs(msg.data);
+          break;
+        default:
+          console.error("Invalid command recieved")
+      }
     });
   } catch (err) {
-    console.error(`Error: ${err.response.status} ${err.response.data}`);
+    console.error(`Error: ${err.response?.status} ${err.response?.data}`);
   }
 };
 
@@ -57,7 +71,6 @@ initSocketConn();
 //led.unexport();
 
 const clearInputs = () => {
-  console.log("deezinputgone");
   if (new Date().getTime() - wTimeOut > timeOut) {
     wPressed = 0;
   }
@@ -70,23 +83,22 @@ const clearInputs = () => {
   if (new Date().getTime() - dTimeOut > timeOut) {
     dPressed = 0;
   }
-  console.log(wPressed);
   setInputs();
 };
 const checkInputs = (data) => {
-  if (data.toString() === "W") {
+  if (data === "W") {
     wPressed = 1;
     wTimeOut = new Date().getTime();
   }
-  if (data.toString() === "S") {
+  if (data === "S") {
     sPressed = 1;
     sTimeOut = new Date().getTime();
   }
-  if (data.toString() === "A") {
+  if (data === "A") {
     aPressed = 1;
     aTimeOut = new Date().getTime();
   }
-  if (data.toString() === "D") {
+  if (data === "D") {
     dPressed = 1;
     dTimeOut = new Date().getTime();
   }
