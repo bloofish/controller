@@ -1,15 +1,15 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
 require("dotenv").config();
-const Gpio = require("onoff").Gpio; //include onoff to interact with the GPIO
+const Gpio = require("pigpio").Gpio;
 
 const API_URL = "https://francescogorini.com/rpi-relay";
 const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 
-const Lforward = new Gpio(4, "out"); //use GPIO pin 4, and specify that it is output
-//const Rforward = new Gpio(1, "out");
-//const Lreverse = new Gpio(1, "out");
-//const Rreverse = new Gpio(1, "out");
+const Lforward = new Gpio(0, "out"); //use GPIO pin 4, and specify that it is output
+const Rforward = new Gpio(1, "out");
+const Lreverse = new Gpio(2, "out");
+const Rreverse = new Gpio(3, "out");
 
 const timeOut = 200;
 
@@ -36,13 +36,13 @@ initSocketConn = async () => {
     });
 
     ws.on("message", (data) => {
-      const msg = JSON.parse(data.toString())
+      const msg = JSON.parse(data.toString());
       switch (msg.cmd) {
         case "TX_PING":
           // Send user ping packet back to relay server to let users calc ping delay in ms
           console.log(`Recieved TX_PING`);
-          const pingReply = { ...msg, sender: msg.target, target: msg.sender }
-          ws.send(JSON.stringify(pingReply))
+          const pingReply = { ...msg, sender: msg.target, target: msg.sender };
+          ws.send(JSON.stringify(pingReply));
           break;
         case "TX_CMD":
           // Process command
@@ -50,7 +50,7 @@ initSocketConn = async () => {
           checkInputs(msg.data);
           break;
         default:
-          console.error("Invalid command recieved")
+          console.error("Invalid command recieved");
       }
     });
   } catch (err) {
@@ -68,7 +68,6 @@ let aPressed = 0;
 let dPressed = 0;
 
 initSocketConn();
-//led.unexport();
 
 const clearInputs = () => {
   if (new Date().getTime() - wTimeOut > timeOut) {
@@ -104,41 +103,78 @@ const checkInputs = (data) => {
   }
   setInputs();
 };
+
 const setInputs = () => {
-  if (wPressed && !sPressed && !aPressed && !dPressed) {
+  if (
+    (wPressed && !sPressed && !aPressed && !dPressed) ||
+    (aPressed && dPressed && wPressed && !sPressed)
+  ) {
     //forward
-    Lforward.writeSync(1);
+    Lforward.pwmWrite(255);
+    Rforward.pwmWrite(255);
+    Lreverse.pwmWrite(0);
+    Rreverse.pwmWrite(0);
   }
-  if (!wPressed && sPressed && !aPressed && !dPressed) {
+  if (
+    (!wPressed && sPressed && !aPressed && !dPressed) ||
+    (aPressed && dPressed && !wPressed && sPressed)
+  ) {
     //backward
+    Lforward.pwmWrite(0);
+    Rforward.pwmWrite(0);
+    Lreverse.pwmWrite(255);
+    Rreverse.pwmWrite(255);
   }
   if (!wPressed && !sPressed && aPressed && !dPressed) {
     //left
+    Lforward.pwmWrite(0);
+    Rforward.pwmWrite(255);
+    Lreverse.pwmWrite(255);
+    Rreverse.pwmWrite(0);
   }
   if (!wPressed && !sPressed && !aPressed && dPressed) {
     //right
+    Lforward.pwmWrite(255);
+    Rforward.pwmWrite(0);
+    Lreverse.pwmWrite(0);
+    Rreverse.pwmWrite(255);
   }
   if (wPressed && !sPressed && aPressed && !dPressed) {
     //forward left
+    Lforward.pwmWrite(50);
+    Rforward.pwmWrite(255);
+    Lreverse.pwmWrite(0);
+    Rreverse.pwmWrite(0);
   }
   if (wPressed && !sPressed && !aPressed && dPressed) {
     //forward right
+    Lforward.pwmWrite(255);
+    Rforward.pwmWrite(50);
+    Lreverse.pwmWrite(0);
+    Rreverse.pwmWrite(0);
   }
   if (!wPressed && sPressed && aPressed && !dPressed) {
     //backward left
+    Lforward.pwmWrite(0);
+    Rforward.pwmWrite(0);
+    Lreverse.pwmWrite(50);
+    Rreverse.pwmWrite(255);
   }
   if (!wPressed && sPressed && !aPressed && dPressed) {
     //backward right
+    Lforward.pwmWrite(0);
+    Rforward.pwmWrite(0);
+    Lreverse.pwmWrite(50);
+    Rreverse.pwmWrite(255);
   }
-  if (!wPressed && !sPressed && !aPressed && !dPressed) {
+  if (
+    (!wPressed && !sPressed && !aPressed && !dPressed) ||
+    (wPressed && sPressed)
+  ) {
     //stopped
-    Lforward.writeSync(0);
-  }
-
-  if (aPressed && dPressed) {
-    //a&d stop turning (priority)
-  }
-  if (wPressed && sPressed) {
-    //s&d stop (priority)
+    Lforward.pwmWrite(0);
+    Rforward.pwmWrite(0);
+    Lreverse.pwmWrite(0);
+    Rreverse.pwmWrite(0);
   }
 };
