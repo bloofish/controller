@@ -13,6 +13,12 @@ const Lreverse = new Gpio(22, "out");
 const Rreverse = new Gpio(23, "out");
 
 const timeOut = 200;
+const streamCamera = new StreamCamera({
+  codec: Codec.MJPEG,
+  flip: Flip.Vertical,
+  sensorMode: SensorMode.Mode6
+});
+
 
 initSocketConn = async () => {
   try {
@@ -53,11 +59,6 @@ initSocketConn = async () => {
         default:
           console.error("Invalid command recieved");
       }
-    });
-
-    // Load new streaming camera
-    const streamCamera = new StreamCamera({
-      codec: Codec.H264
     });
 
     // Fetch it as a NodeJS buffer
