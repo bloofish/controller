@@ -36,7 +36,8 @@ initSocketConn = async () => {
     ws.on("open", () => {
       const handle = setInterval(() => clearInputs(), timeOut);
       console.log("Websocket connection established");
-      // Fetch it as a NodeJS buffer
+
+      // Camera streaming code
       streamCamera.on('frame', (data) => {
         const base64Data = "data:image/jpeg;base64," + data.toString("base64")
         const TX_FRAME = {
