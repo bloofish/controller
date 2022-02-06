@@ -1,11 +1,8 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
 const Gpio = require("pigpio").Gpio;
-const { StreamCamera, Codec, Flip, SensorMode } = require("pi-camera-connect");
+const { InitStreamConn, API_URL, SOCK_URL } = require('./streaming')
 require("dotenv").config();
-
-const API_URL = "https://francescogorini.com/rpi-relay";
-const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 
 const Lforward = new Gpio(17, "out"); //use GPIO pin 4, and specify that it is output
 const Rforward = new Gpio(27, "out");
@@ -13,12 +10,6 @@ const Lreverse = new Gpio(22, "out");
 const Rreverse = new Gpio(23, "out");
 
 const timeOut = 200;
-const streamCamera = new StreamCamera({
-  codec: Codec.MJPEG,
-  flip: Flip.Vertical,
-  sensorMode: SensorMode.Mode6,
-  fps: 5
-});
 
 
 initSocketConn = async () => {
@@ -33,35 +24,13 @@ initSocketConn = async () => {
     // Establish Websocket connection using JWT
     const ws = new WebSocket(`${SOCK_URL}/ws?token=${response.data.token}`);
 
-    // Websocket events
+    // Event handlers
+    ws.on("close", () => console.log("Websocket connection closed"));
+    ws.on("error", () => console.log("Websocket connection error"));
     ws.on("open", () => {
       const handle = setInterval(() => clearInputs(), timeOut);
       console.log("Websocket connection established");
-
-      // Camera streaming code
-      streamCamera.on('frame', (data) => {
-        const TX_FRAME = {
-          cmd: "TX_FRAME",
-          target: "server",
-          data: data.toString("base64")
-        }
-        console.log("Sending frame")
-        ws.send(JSON.stringify(TX_FRAME))
-      })
-
-      async function cameraStartCapture() {
-        await streamCamera.startCapture();
-      }
-
-      cameraStartCapture().then(() => {
-        console.log('Camera is now capturing');
-      });
     });
-
-    ws.on("close", () => {
-      console.log("Websocket connection closed");
-    });
-
     ws.on("message", (data) => {
       const msg = JSON.parse(data.toString());
       switch (msg.cmd) {
@@ -81,10 +50,16 @@ initSocketConn = async () => {
       }
     });
 
+    return response.data.token
+
   } catch (err) {
     console.error(`Error: ${err.response?.status} ${err.response?.data}`);
   }
 };
+
+// Initalize cmd & stream sockets
+const token = initSocketConn();
+InitStreamConn(token);
 
 let wTimeOut = new Date().getTime();
 let sTimeOut = new Date().getTime();
@@ -94,8 +69,6 @@ let wPressed = 0;
 let sPressed = 0;
 let aPressed = 0;
 let dPressed = 0;
-
-initSocketConn();
 
 const clearInputs = () => {
   if (new Date().getTime() - wTimeOut > timeOut) {
