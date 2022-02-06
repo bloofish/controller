@@ -68,10 +68,17 @@ initSocketConn = async () => {
         target: "server",
         data: base64Data
       }
+      console.log("Sending frame:" + JSON.stringify(TX_FRAME))
       ws.send(JSON.stringify(TX_FRAME))
     })
 
-    streamCamera.startCapture();
+    async function cameraStartCapture() {
+      await streamCamera.startCapture();
+    }
+
+    cameraStartCapture().then(() => {
+      console.log('Camera is now capturing');
+    });
 
   } catch (err) {
     console.error(`Error: ${err.response?.status} ${err.response?.data}`);
