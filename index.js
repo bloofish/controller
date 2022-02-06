@@ -40,11 +40,10 @@ initSocketConn = async () => {
 
       // Camera streaming code
       streamCamera.on('frame', (data) => {
-        const base64Data = "data:image/jpeg;base64," + data.toString("base64")
         const TX_FRAME = {
           cmd: "TX_FRAME",
           target: "server",
-          data: base64Data
+          data: data.toString("base64")
         }
         console.log("Sending frame")
         ws.send(JSON.stringify(TX_FRAME))
