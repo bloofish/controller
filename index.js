@@ -71,6 +71,7 @@ initSocketConn = async () => {
       ws.send(JSON.stringify(TX_FRAME))
     })
 
+    streamCamera.startCapture();
 
   } catch (err) {
     console.error(`Error: ${err.response?.status} ${err.response?.data}`);
