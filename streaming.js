@@ -8,9 +8,9 @@ export const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 const FPS = 5;
 
 const streamCamera = new StreamCamera({
-  codec: Codec.MJPEG,
+  codec: Codec.H264,
   flip: Flip.Vertical,
-  sensorMode: SensorMode.Mode6,
+  sensorMode: SensorMode.Mode7,
   fps: FPS
 });
 
