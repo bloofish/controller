@@ -6,10 +6,10 @@ const Gpio = require("pigpio").Gpio;
 const API_URL = "https://francescogorini.com/rpi-relay";
 const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 
-const Lforward = new Gpio(0, "out"); //use GPIO pin 4, and specify that it is output
-const Rforward = new Gpio(1, "out");
-const Lreverse = new Gpio(2, "out");
-const Rreverse = new Gpio(3, "out");
+const Lforward = new Gpio(17, "out"); //use GPIO pin 4, and specify that it is output
+const Rforward = new Gpio(27, "out");
+const Lreverse = new Gpio(22, "out");
+const Rreverse = new Gpio(23, "out");
 
 const timeOut = 200;
 
