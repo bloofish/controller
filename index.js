@@ -85,6 +85,7 @@ const clearInputs = () => {
   setInputs();
 };
 const checkInputs = (data) => {
+  console.log("checking input" + data);
   if (data === "W") {
     wPressed = 1;
     wTimeOut = new Date().getTime();
@@ -110,6 +111,7 @@ const setInputs = () => {
     (aPressed && dPressed && wPressed && !sPressed)
   ) {
     //forward
+    console.log(`Forward`);
     Lforward.pwmWrite(255);
     Rforward.pwmWrite(255);
     Lreverse.pwmWrite(0);
@@ -120,6 +122,7 @@ const setInputs = () => {
     (aPressed && dPressed && !wPressed && sPressed)
   ) {
     //backward
+    console.log(`Backward`);
     Lforward.pwmWrite(0);
     Rforward.pwmWrite(0);
     Lreverse.pwmWrite(255);
@@ -127,6 +130,7 @@ const setInputs = () => {
   }
   if (!wPressed && !sPressed && aPressed && !dPressed) {
     //left
+    console.log(`Left`);
     Lforward.pwmWrite(0);
     Rforward.pwmWrite(255);
     Lreverse.pwmWrite(255);
@@ -134,6 +138,7 @@ const setInputs = () => {
   }
   if (!wPressed && !sPressed && !aPressed && dPressed) {
     //right
+    console.log(`Right`);
     Lforward.pwmWrite(255);
     Rforward.pwmWrite(0);
     Lreverse.pwmWrite(0);
