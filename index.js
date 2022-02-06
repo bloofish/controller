@@ -77,7 +77,7 @@ initSocketConn = async () => {
           checkInputs(msg.data);
           break;
         default:
-          console.error("Invalid command recieved");
+          console.error("Invalid command recieved: " + msg);
       }
     });
 
