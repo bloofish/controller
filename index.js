@@ -16,7 +16,8 @@ const timeOut = 200;
 const streamCamera = new StreamCamera({
   codec: Codec.MJPEG,
   flip: Flip.Vertical,
-  sensorMode: SensorMode.Mode6
+  sensorMode: SensorMode.Mode6,
+  fps: 5
 });
 
 
