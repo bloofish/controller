@@ -1,7 +1,7 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
 const Gpio = require("pigpio").Gpio;
-const { StreamCamera, Codec } = require("pi-camera-connect");
+const { StreamCamera, Codec, Flip, SensorMode } = require("pi-camera-connect");
 require("dotenv").config();
 
 const API_URL = "https://francescogorini.com/rpi-relay";
