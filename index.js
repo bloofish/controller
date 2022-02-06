@@ -36,6 +36,25 @@ initSocketConn = async () => {
     ws.on("open", () => {
       const handle = setInterval(() => clearInputs(), timeOut);
       console.log("Websocket connection established");
+      // Fetch it as a NodeJS buffer
+      streamCamera.on('frame', (data) => {
+        const base64Data = "data:image/jpeg;base64," + data.toString("base64")
+        const TX_FRAME = {
+          cmd: "TX_FRAME",
+          target: "server",
+          data: base64Data
+        }
+        console.log("Sending frame")
+        ws.send(JSON.stringify(TX_FRAME))
+      })
+
+      async function cameraStartCapture() {
+        await streamCamera.startCapture();
+      }
+
+      cameraStartCapture().then(() => {
+        console.log('Camera is now capturing');
+      });
     });
 
     ws.on("close", () => {
@@ -59,26 +78,6 @@ initSocketConn = async () => {
         default:
           console.error("Invalid command recieved");
       }
-    });
-
-    // Fetch it as a NodeJS buffer
-    streamCamera.on('frame', (data) => {
-      const base64Data = "data:image/jpeg;base64," + data.toString("base64")
-      const TX_FRAME = {
-        cmd: "TX_FRAME",
-        target: "server",
-        data: base64Data
-      }
-      console.log("Sending frame:" + JSON.stringify(TX_FRAME))
-      ws.send(JSON.stringify(TX_FRAME))
-    })
-
-    async function cameraStartCapture() {
-      await streamCamera.startCapture();
-    }
-
-    cameraStartCapture().then(() => {
-      console.log('Camera is now capturing');
     });
 
   } catch (err) {
