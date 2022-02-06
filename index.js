@@ -1,7 +1,8 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
-require("dotenv").config();
 const Gpio = require("pigpio").Gpio;
+const { StreamCamera, Codec } = require("pi-camera-connect");
+require("dotenv").config();
 
 const API_URL = "https://francescogorini.com/rpi-relay";
 const SOCK_URL = "wss://francescogorini.com/rpi-relay";
@@ -53,6 +54,24 @@ initSocketConn = async () => {
           console.error("Invalid command recieved");
       }
     });
+
+    // Load new streaming camera
+    const streamCamera = new StreamCamera({
+      codec: Codec.H264
+    });
+
+    // Fetch it as a NodeJS buffer
+    streamCamera.on('frame', (data) => {
+      const base64Data = "data:image/jpeg;base64," + data.toString("base64")
+      const TX_FRAME = {
+        cmd: "TX_FRAME",
+        target: "server",
+        data: base64Data
+      }
+      ws.send(JSON.stringify(TX_FRAME))
+    })
+
+
   } catch (err) {
     console.error(`Error: ${err.response?.status} ${err.response?.data}`);
   }
