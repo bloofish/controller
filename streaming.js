@@ -28,10 +28,12 @@ export const InitStreamConn = async (token) => {
 
       // Camera streaming code
       streamCamera.on('frame', (data) => {
+        let b64Data = data.toString("base64")
+        console.log(`Sending frame of length ${b64Data.length}...`)
         const TX_FRAME = {
           cmd: "TX_FRAME",
           target: "server",
-          data: data.toString("base64")
+          data: b64Data
         }
         streamSock.send(JSON.stringify(TX_FRAME))
       })

@@ -30,6 +30,7 @@ initSocketConn = async () => {
     ws.on("open", () => {
       const handle = setInterval(() => clearInputs(), timeOut);
       console.log("Websocket connection established");
+      InitStreamConn(token);
     });
     ws.on("message", (data) => {
       const msg = JSON.parse(data.toString());
@@ -59,7 +60,6 @@ initSocketConn = async () => {
 
 // Initalize cmd & stream sockets
 const token = initSocketConn();
-InitStreamConn(token);
 
 let wTimeOut = new Date().getTime();
 let sTimeOut = new Date().getTime();
