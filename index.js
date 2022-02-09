@@ -30,7 +30,7 @@ initSocketConn = async () => {
     ws.on("open", () => {
       const handle = setInterval(() => clearInputs(), timeOut);
       console.log("Websocket connection established");
-      InitStreamConn(token);
+      InitStreamConn(response.data.token);
     });
     ws.on("message", (data) => {
       const msg = JSON.parse(data.toString());
