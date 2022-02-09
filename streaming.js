@@ -38,13 +38,8 @@ const InitStreamConn = async (token) => {
         streamSock.send(JSON.stringify(TX_FRAME))
       })
 
-      const cameraStartCapture = async () => {
-        await streamCamera.startCapture();
-      }
-
-      cameraStartCapture().then(() => {
-        console.log(`Camera is now capturing at ${FPS} fps`);
-      });
+      await streamCamera.startCapture();
+      console.log(`Camera is now capturing at ${FPS} fps`);
     });
 
   } catch (err) {
