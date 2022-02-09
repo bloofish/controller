@@ -6,13 +6,14 @@ const API_URL = "https://francescogorini.com/rpi-relay";
 const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 
 const FPS = 5;
-
 const streamCamera = new StreamCamera({
-  codec: Codec.H264,
+  codec: Codec.MJPEG,
   flip: Flip.Vertical,
   sensorMode: SensorMode.Mode7,
   fps: FPS
 });
+
+let lastFrameTime = Date.now()
 
 const InitStreamConn = async (token) => {
   try {
@@ -23,11 +24,13 @@ const InitStreamConn = async (token) => {
     streamSock.on("close", () => console.log("Stream Websocket connection closed"));
     streamSock.on("error", () => console.log("Stream Websocket connection error"));
 
-    streamSock.on("open", () => {
+    streamSock.on("open", async () => {
       console.log("Stream Websocket connection established");
 
       // Camera streaming code
-      streamCamera.on('frame', (data) => {
+      streamCamera.on('frame', async (data) => {
+        if (Date.now() - lastFrameTime < 1000) return
+        lastFrameTime = Date.now()
         let b64Data = data.toString("base64")
         console.log(`Sending frame of length ${b64Data.length}...`)
         const TX_FRAME = {
