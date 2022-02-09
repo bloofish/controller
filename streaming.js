@@ -29,7 +29,7 @@ const InitStreamConn = async (token) => {
 
       // Camera streaming code
       streamCamera.on('frame', async (data) => {
-        if (Date.now() - lastFrameTime < 333) return
+        if (Date.now() - lastFrameTime < 500) return
         lastFrameTime = Date.now()
         let b64Data = data.toString("base64")
         console.log(`Sending frame of length ${b64Data.length}...`)
