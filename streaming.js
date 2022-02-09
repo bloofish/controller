@@ -7,17 +7,17 @@ const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 
 const FPS = 5;
 
-const streamCamera = new StreamCamera({
-  codec: Codec.H264,
-  flip: Flip.Vertical,
-  sensorMode: SensorMode.Mode7,
-  fps: FPS
-});
-
 const InitStreamConn = async (token) => {
   try {
     // Establish Websocket connection using JWT
     const streamSock = new WebSocket(`${SOCK_URL}/ws?token=${token}`);
+
+    const streamCamera = new StreamCamera({
+      codec: Codec.H264,
+      flip: Flip.Vertical,
+      sensorMode: SensorMode.Mode7,
+      fps: FPS
+    });
 
     // Event handlers
     streamSock.on("close", () => console.log("Stream Websocket connection closed"));
