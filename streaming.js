@@ -2,8 +2,8 @@ const { WebSocket } = require("ws");
 const { StreamCamera, Codec, Flip, SensorMode } = require("pi-camera-connect");
 require("dotenv").config();
 
-export const API_URL = "https://francescogorini.com/rpi-relay";
-export const SOCK_URL = "wss://francescogorini.com/rpi-relay";
+const API_URL = "https://francescogorini.com/rpi-relay";
+const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 
 const FPS = 5;
 
@@ -14,7 +14,7 @@ const streamCamera = new StreamCamera({
   fps: FPS
 });
 
-export const InitStreamConn = async (token) => {
+const InitStreamConn = async (token) => {
   try {
     // Establish Websocket connection using JWT
     const streamSock = new WebSocket(`${SOCK_URL}/ws?token=${token}`);
@@ -51,3 +51,9 @@ export const InitStreamConn = async (token) => {
     console.error(`Stream sock setup Error: ${err}`);
   }
 };
+
+module.exports = {
+  API_URL: API_URL,
+  SOCK_URL: SOCK_URL,
+  InitStreamConn: InitStreamConn
+}
