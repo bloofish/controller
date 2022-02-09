@@ -27,7 +27,7 @@ initSocketConn = async () => {
     // Event handlers
     ws.on("close", () => console.log("Websocket connection closed"));
     ws.on("error", () => console.log("Websocket connection error"));
-    ws.on("open", () => {
+    ws.on("open", async () => {
       const handle = setInterval(() => clearInputs(), timeOut);
       console.log("Websocket connection established");
       await InitStreamConn(response.data.token);

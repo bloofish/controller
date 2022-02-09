@@ -8,7 +8,7 @@ const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 const FPS = 5;
 const streamCamera = new StreamCamera({
   codec: Codec.MJPEG,
-  flip: Flip.Vertical,
+  // flip: Flip.Vertical,
   sensorMode: SensorMode.Mode7,
   fps: FPS
 });
@@ -29,7 +29,7 @@ const InitStreamConn = async (token) => {
 
       // Camera streaming code
       streamCamera.on('frame', async (data) => {
-        if (Date.now() - lastFrameTime < 1000) return
+        if (Date.now() - lastFrameTime < 333) return
         lastFrameTime = Date.now()
         let b64Data = data.toString("base64")
         console.log(`Sending frame of length ${b64Data.length}...`)
