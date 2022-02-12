@@ -46,7 +46,8 @@ const InitStreamConn = async (token) => {
       })
 
       // Camera streaming code for H264 binary
-      streamCamera.on('data', async (data) => {
+      const videoStream = streamCamera.createStream();
+      videoStream.on('data', async (data) => {
         if (Date.now() - lastFrameTime < 500) return // hacky 2fps
         lastFrameTime = Date.now()
 
