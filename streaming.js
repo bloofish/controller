@@ -2,15 +2,15 @@ const { WebSocket } = require("ws");
 const { StreamCamera, Codec, Flip, SensorMode } = require("pi-camera-connect");
 require("dotenv").config();
 
-const API_URL = "https://francescogorini.com/rpi-relay";
-const SOCK_URL = "wss://francescogorini.com/rpi-relay";
+// const API_URL = "https://francescogorini.com/rpi-relay";
+// const SOCK_URL = "wss://francescogorini.com/rpi-relay";
 
-// const API_URL = "http://192.168.1.65:9999/rpi-relay";
-// const SOCK_URL = "ws://192.168.1.65:9999/rpi-relay";
+const API_URL = "http://192.168.1.65:9999/rpi-relay";
+const SOCK_URL = "ws://192.168.1.65:9999/rpi-relay";
 
 const FPS = 5;
 const streamCamera = new StreamCamera({
-  codec: Codec.MJPEG,
+  codec: Codec.H264,
   flip: Flip.Both,
   sensorMode: SensorMode.Mode7,
   fps: FPS // This doesn't seem to work
@@ -30,7 +30,7 @@ const InitStreamConn = async (token) => {
     streamSock.on("open", async () => {
       console.log("Stream Websocket connection established");
 
-      // Camera streaming code
+      // Camera streaming code for MJPEG base64
       streamCamera.on('frame', async (data) => {
         if (Date.now() - lastFrameTime < 500) return // hacky 2fps
         lastFrameTime = Date.now()
@@ -43,6 +43,15 @@ const InitStreamConn = async (token) => {
           data: b64Data
         }
         streamSock.send(JSON.stringify(TX_FRAME))
+      })
+
+      // Camera streaming code for H264 binary
+      streamCamera.on('data', async (data) => {
+        if (Date.now() - lastFrameTime < 500) return // hacky 2fps
+        lastFrameTime = Date.now()
+
+        console.log(`Sending frame of length ${data.length}...`)
+        streamSock.send(data)
       })
 
       await streamCamera.startCapture();
