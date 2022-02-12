@@ -22,7 +22,7 @@ const InitStreamConn = async (token) => {
   try {
     // Establish Websocket connection using JWT
     const streamSock = new WebSocket(`${SOCK_URL}/ws?token=${token}`);
-
+    streamSock.binaryType = 'arraybuffer'
     // Event handlers
     streamSock.on("close", () => console.log("Stream Websocket connection closed"));
     streamSock.on("error", () => console.log("Stream Websocket connection error"));
