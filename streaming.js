@@ -33,29 +33,13 @@ const InitStreamConn = async (token) => {
     streamSock.on("open", async () => {
       console.log("Stream Websocket connection established");
 
-      // Camera streaming code for MJPEG base64
-      //   streamCamera.on('frame', async (data) => {
-      //     if (Date.now() - lastFrameTime < 500) return // hacky 2fps
-      //     lastFrameTime = Date.now()
 
-      //     let b64Data = data.toString("base64")
-      //     console.log(`Sending frame of length ${b64Data.length}...`)
-      //     const TX_FRAME = {
-      //       cmd: "TX_FRAME",
-      //       target: "server",
-      //       data: b64Data
-      //     }
-      //     streamSock.send(JSON.stringify(TX_FRAME))
-      //   })
+      vstream = spawn('raspivid', ['-t', '9999999', '-fps', '10', '-b', '20000', '-h', '300', '-w', '500', '-ro', '180', '-ih', '-o', '-', '-n']);
 
-      // Camera streaming code for H264 binary
-      //   const videoStream = streamCamera.createStream();
-
-      vstream = spawn('raspivid', ['-t', '9999999', '-fps', '5', '-h', '300', '-w', '500', '-ih', '-o', '-', '-n']);
-
-      vstream.stdout.on('data', async (data) => {
-        streamSock.send(data)
-      })
+      vstream.stdout.pipe(streamSock);
+      // vstream.stdout.on('data', async (data) => {
+      //   streamSock.send(data)
+      // })
 
       vstream.stderr.on('data', (data) => {
         console.error(`videostream: stderr: ${data}`);
