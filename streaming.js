@@ -51,10 +51,9 @@ const InitStreamConn = async (token) => {
       // Camera streaming code for H264 binary
       //   const videoStream = streamCamera.createStream();
 
-      vstream = spawn('raspivid', ['-t', '9999999', '-fps', '5', '-ih', '-o', '-', '-n']);
+      vstream = spawn('raspivid', ['-t', '9999999', '-fps', '5', '-h', '300', '-w', '500', '-ih', '-o', '-', '-n']);
 
       vstream.stdout.on('data', async (data) => {
-        console.log(`videostream: Sending frame of length ${data.length}...`)
         streamSock.send(data)
       })
 
