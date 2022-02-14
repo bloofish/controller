@@ -1,7 +1,8 @@
-const { WebSocket } = require("ws");
-const { StreamCamera, Codec, Flip, SensorMode } = require("pi-camera-connect");
+const { WebSocket } = require('ws');
+const websocketStream = require('websocket-stream');
+const { StreamCamera, Codec, Flip, SensorMode } = require('pi-camera-connect');
 const { spawn } = require('child_process');
-require("dotenv").config();
+require('dotenv').config();
 
 // const API_URL = "https://francescogorini.com/rpi-relay";
 // const SOCK_URL = "wss://francescogorini.com/rpi-relay";
@@ -35,8 +36,8 @@ const InitStreamConn = async (token) => {
 
 
       vstream = spawn('raspivid', ['-t', '9999999', '-fps', '10', '-b', '20000', '-h', '300', '-w', '500', '-ro', '180', '-ih', '-o', '-', '-n']);
-
-      vstream.stdout.pipe(streamSock);
+      let streamSockVid = websocketStream(streamSock)
+      vstream.stdout.pipe(streamSockVid);
       // vstream.stdout.on('data', async (data) => {
       //   streamSock.send(data)
       // })

@@ -13,6 +13,7 @@
         "dotenv": "^14.0.1",
         "pi-camera-connect": "^0.3.4",
         "pigpio": "^3.3.1",
+        "websocket-stream": "^5.5.2",
         "ws": "^8.4.0"
     }
 }
