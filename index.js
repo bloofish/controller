@@ -54,8 +54,10 @@ initSocketConn = async () => {
             ...msg,
             sender: msg.target,
             target: msg.sender,
-            cpu: await sysInfo.cpuCurrentSpeed(),
-            mem: await sysInfo.mem()
+            data: {
+              cpu: await sysInfo.cpuCurrentSpeed(),
+              mem: await sysInfo.mem()
+            }
           };
           console.log(`TX_STATS reply: ${JSON.stringify(statsReply)}`)
           ws.send(JSON.stringify(statsReply));
