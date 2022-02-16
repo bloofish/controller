@@ -33,7 +33,7 @@ initSocketConn = async () => {
       console.log("Websocket connection established");
       await InitStreamConn(response.data.token);
     });
-    ws.on("message", (data) => {
+    ws.on("message", async (data) => {
       const msg = JSON.parse(data.toString());
       switch (msg.cmd) {
         case "TX_PING":
@@ -54,8 +54,8 @@ initSocketConn = async () => {
             ...msg,
             sender: msg.target,
             target: msg.sender,
-            cpu: (await sysInfo.cpuCurrentSpeed()),
-            mem: (await sysInfo.mem())
+            cpu: await sysInfo.cpuCurrentSpeed(),
+            mem: await sysInfo.mem()
           };
           console.log(`TX_STATS reply: ${JSON.stringify(statsReply)}`)
           ws.send(JSON.stringify(statsReply));
