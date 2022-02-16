@@ -48,8 +48,8 @@ initSocketConn = async () => {
           checkInputs(msg.data);
           break;
         case "TX_STATS":
-          // Process command
-          console.log(`Recieved TX_STATS: ${msg.data}`);
+          // Process stats request
+          console.log(`Sending statistics. TX_STATS: ${msg.data}`);
           const statsReply = {
             ...msg,
             sender: msg.target,
@@ -59,7 +59,6 @@ initSocketConn = async () => {
               mem: await sysInfo.mem()
             }
           };
-          console.log(`TX_STATS reply: ${JSON.stringify(statsReply)}`)
           ws.send(JSON.stringify(statsReply));
           break;
         default:
@@ -75,7 +74,7 @@ initSocketConn = async () => {
 };
 
 // Initalize cmd & stream sockets
-const token = initSocketConn();
+initSocketConn();
 
 let wTimeOut = new Date().getTime();
 let sTimeOut = new Date().getTime();
@@ -128,7 +127,6 @@ const setInputs = () => {
     (aPressed && dPressed && wPressed && !sPressed)
   ) {
     //forward
-    console.log(`Forward`);
     Lforward.pwmWrite(255);
     Rforward.pwmWrite(255);
     Lreverse.pwmWrite(0);
@@ -139,7 +137,6 @@ const setInputs = () => {
     (aPressed && dPressed && !wPressed && sPressed)
   ) {
     //backward
-    console.log(`Backward`);
     Lforward.pwmWrite(0);
     Rforward.pwmWrite(0);
     Lreverse.pwmWrite(255);
@@ -147,7 +144,6 @@ const setInputs = () => {
   }
   if (!wPressed && !sPressed && aPressed && !dPressed) {
     //left
-    console.log(`Left`);
     Lforward.pwmWrite(0);
     Rforward.pwmWrite(255);
     Lreverse.pwmWrite(255);
@@ -155,7 +151,6 @@ const setInputs = () => {
   }
   if (!wPressed && !sPressed && !aPressed && dPressed) {
     //right
-    console.log(`Right`);
     Lforward.pwmWrite(255);
     Rforward.pwmWrite(0);
     Lreverse.pwmWrite(0);

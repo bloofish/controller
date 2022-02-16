@@ -3,15 +3,15 @@ const websocketStream = require('websocket-stream');
 const { spawn } = require('child_process');
 require('dotenv').config();
 
-// const API_URL = "https://francescogorini.com/rpi-relay";
-// const SOCK_URL = "wss://francescogorini.com/rpi-relay";
-const API_URL = "http://192.168.1.65:9999/rpi-relay";
-const SOCK_URL = "ws://192.168.1.65:9999/rpi-relay";
+const API_URL = "https://francescogorini.com/rpi-relay";
+const SOCK_URL = "wss://francescogorini.com/rpi-relay";
+// const API_URL = "http://192.168.1.65:9999/rpi-relay";
+// const SOCK_URL = "ws://192.168.1.65:9999/rpi-relay";
 
-const FPS = '20'
+const FPS = '30'
 const BitRate = '150000'
-const Width = '480'
-const Height = '360'
+const Width = '1280'
+const Height = '720'
 const Rotation = '180'
 
 const InitStreamConn = async (token) => {
