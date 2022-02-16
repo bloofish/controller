@@ -9,7 +9,7 @@ const API_URL = "http://192.168.1.65:9999/rpi-relay";
 const SOCK_URL = "ws://192.168.1.65:9999/rpi-relay";
 
 const FPS = '20'
-const BitRate = '25000'
+const BitRate = '150000'
 const Width = '480'
 const Height = '360'
 const Rotation = '180'
