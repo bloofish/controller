@@ -1,6 +1,7 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
 const Gpio = require("pigpio").Gpio;
+const sysInfo = require('systeminformation');
 const { InitStreamConn, API_URL, SOCK_URL } = require('./streaming')
 require("dotenv").config();
 
@@ -45,6 +46,19 @@ initSocketConn = async () => {
           // Process command
           console.log(`Recieved TX_CMD: ${msg.data}`);
           checkInputs(msg.data);
+          break;
+        case "TX_STATS":
+          // Process command
+          console.log(`Recieved TX_STATS: ${msg.data}`);
+          const statsReply = {
+            ...msg,
+            sender: msg.target,
+            target: msg.sender,
+            cpu: (await sysInfo.cpuCurrentSpeed()),
+            mem: (await sysInfo.mem())
+          };
+          console.log(`TX_STATS reply: ${JSON.stringify(statsReply)}`)
+          ws.send(JSON.stringify(statsReply));
           break;
         default:
           console.error("Invalid command recieved: " + data.toString());
